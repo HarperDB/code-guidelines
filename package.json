@@ -1,0 +1,13 @@
+{
+	"name": "@harperdb/code-guidelines",
+	"version": "0.0.1",
+	"type": "module",
+	"exports": {
+		"./prettier": "./prettier.config.js"
+	},
+	"license": "MIT",
+	"description": "Coding Guidelines for HarperDB repositories. Includes types, linting, and formatting.",
+	"dependencies": {
+		"prettier": "3.3.3"
+	}
+}
