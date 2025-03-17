@@ -7,6 +7,9 @@
 	},
 	"license": "MIT",
 	"description": "Coding Guidelines for HarperDB repositories. Includes types, linting, and formatting.",
+	"bin": {
+		"harper-code-guidelines": "./cli.js"
+	},
 	"dependencies": {
 		"prettier": "3.3.3"
 	}
