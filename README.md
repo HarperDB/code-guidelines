@@ -6,7 +6,7 @@ This repository contains code guideline tools and configurations for the HarperD
 
 ## Quick Start
 
-1. `npm i @harperdb/code-guidelines`
+1. `npm i --save-dev @harperdb/code-guidelines`
 
 2. Add `"prettier": "@harperdb/code-guidelines/prettier"` to **package.json**.
 
