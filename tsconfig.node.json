@@ -1,0 +1,4 @@
+{
+	"extends": ["@tsconfig/node20/tsconfig.json", "@tsconfig/node-ts/tsconfig.json"],
+	"compilerOptions": {}
+}
