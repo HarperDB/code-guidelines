@@ -1,13 +1,20 @@
 {
 	"name": "@harperdb/code-guidelines",
+	"description": "Coding Guidelines for Harper repositories. Includes types, linting, and formatting.",
 	"version": "0.0.2",
 	"type": "module",
 	"exports": {
+		"./tsconfig.node.json": "./tsconfig.node.json",
 		"./prettier": "./prettier.config.js"
 	},
-	"license": "MIT",
-	"description": "Coding Guidelines for HarperDB repositories. Includes types, linting, and formatting.",
+	"license": "Apache-2.0",
+	"peerDependencies": {
+		"@types/node": ">= 20",
+		"prettier": ">= 3",
+		"typescript": ">= 5.9"
+	},
 	"dependencies": {
-		"prettier": "3.3.3"
+		"@tsconfig/node-ts": "23.6.1",
+		"@tsconfig/node20": "20.1.6"
 	}
 }
