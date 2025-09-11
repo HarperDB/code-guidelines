@@ -24,9 +24,7 @@ Review the [Sharing Configurations](https://prettier.io/docs/en/sharing-configur
 
 ## Type Checking
 
-We use [TypeScript](https://www.typescriptlang.org/) for type checking.
-
-TypeScript configuration files will be available under the `/tsconfig` export path and can be used with the `extends` property in your own `tsconfig.json` files.
+TypeScript configuration files are available under the `/tsconfig` export path and can be used with the `extends` property in your own `tsconfig.json` files.
 
 For example, to use the base Node.js configuration (supporting Node.js v20 or later):
 
@@ -34,21 +32,34 @@ For example, to use the base Node.js configuration (supporting Node.js v20 or la
    ```bash
    npm i --save-dev typescript @types/node@20 @harperdb/code-guidelines
    ```
-2. Then create a `tsconfig.json` file in your project root with the following content:
+2. Then create a `tsconfig.json` file in your project with the following content:
    ```json
    {
-   	"extends": "@harperdb/code-guidelines/tsconfig/node",
+   	"extends": "@harperdb/code-guidelines/tsconfig.node.json",
    	"compilerOptions": {
    		// Your custom options here
    	}
    }
    ```
-
-We use nested paths for different environments and versions.
+3. Finally, use TypeScript or Node.js Type Stripping!
+   ```bash
+   npx tsc
+   # or
+   node src/index.ts
+   ```
 
 Configurations are based off of the popular [tsconfig bases](https://github.com/tsconfig/bases) project.
 
 The following list outlines the available configurations:
 
-- `/tsconfig/node` - Node.js v20 or later
+- `tsconfig.node.json` - Node.js v20 or later with Node.js Type Stripping support
 - _More coming soon!_
+
+### Adding new configurations
+
+To add a new TypeScript configuration:
+
+1. Create a new file in this repository starting with `tsconfig.` and ending with `.json`. The name in between should be descriptive of the environment or relevant version (e.g. `tsconfig.react.json` or `tsconfig.node-24.json`).
+2. Update the `exports` field in `package.json` to include the new configuration file using the same name as the file.
+3. Add it to the list above with a brief description.
+4. Ship it 🚀

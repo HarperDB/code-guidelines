@@ -4,7 +4,7 @@
 	"version": "0.0.2",
 	"type": "module",
 	"exports": {
-		"./tsconfig/node": "./tsconfig.node.json",
+		"./tsconfig.node.json": "./tsconfig.node.json",
 		"./prettier": "./prettier.config.js"
 	},
 	"license": "Apache-2.0",
