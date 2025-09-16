@@ -5,16 +5,20 @@
 	"type": "module",
 	"exports": {
 		"./tsconfig.node.json": "./tsconfig.node.json",
-		"./prettier": "./prettier.config.js"
+		"./prettier": "./prettier.config.js",
+		"./eslint": "./eslint.config.mjs"
 	},
 	"license": "Apache-2.0",
 	"peerDependencies": {
 		"@types/node": ">= 20",
 		"prettier": ">= 3",
-		"typescript": ">= 5.9"
+		"typescript": ">= 5.9",
+		"eslint": ">= 9"
 	},
 	"dependencies": {
 		"@tsconfig/node-ts": "23.6.1",
-		"@tsconfig/node20": "20.1.6"
+		"@tsconfig/node20": "20.1.6",
+		"eslint-config-prettier": "10.1.8",
+		"eslint-plugin-prettier": "5.5.4"
 	}
 }

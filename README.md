@@ -2,7 +2,7 @@
 
 This repository contains code guideline tools and configurations for the HarperDB organization.
 
-> Currently this only exports a shared Prettier configuration. More tools will be added soon.
+> Currently exports shared configurations for Prettier, ESLint, and TS Node Type Checking. More tools will be added soon.
 
 ## Quick Start
 
@@ -20,7 +20,57 @@ Review the [Sharing Configurations](https://prettier.io/docs/en/sharing-configur
 
 ## Linting
 
-> Coming soon!
+We use [ESLint](https://eslint.org/) to enforce code quality and integrate Prettier formatting. The default config is exported under the `/eslint` path (i.e. `@harperdb/code-guidelines/eslint`).
+
+### Using the Harper ESLint Configuration
+
+1. Install the required dependencies:
+
+```bash
+npm i --save-dev @harperdb/code-guidelines eslint eslint-config-prettier eslint-plugin-prettier
+```
+
+2. Add `"eslint": "@harperdb/code-guidelines/eslint"` to **package.json**.
+
+3. Run ESLint:
+
+```bash
+npx eslint .
+```
+
+### Extending the Configuration
+
+You can extend or override the base configuration by adding your own rules after importing the Harper config.
+
+For more detailed information about extending configurations, see the [ESLint Configuration Files documentation](https://eslint.org/docs/latest/use/configure/configuration-files#extending-configurations).
+
+1. Install the required dependencies:
+
+```bash
+npm i --save-dev @harperdb/code-guidelines eslint eslint-config-prettier eslint-plugin-prettier
+```
+
+2. Create an `eslint.config.mjs` file in your project root:
+
+```javascript
+import harperConfig from "@harperdb/code-guidelines/eslint.config.mjs";
+
+export default [
+  ...harperConfig,
+  // Your custom configuration here
+  {
+    rules: {
+      // Override or add custom rules
+    },
+  },
+];
+```
+
+3. Run ESLint:
+
+```bash
+npx eslint .
+```
 
 ## Type Checking
 
@@ -29,24 +79,29 @@ TypeScript configuration files are available under the `/tsconfig` export path a
 For example, to use the base Node.js configuration (supporting Node.js v20 or later):
 
 1. Start by installing necessary dev dependencies:
-   ```bash
+
+```bash
    npm i --save-dev typescript @types/node@20 @harperdb/code-guidelines
-   ```
+```
+
 2. Then create a `tsconfig.json` file in your project with the following content:
-   ```json
-   {
-   	"extends": "@harperdb/code-guidelines/tsconfig.node.json",
-   	"compilerOptions": {
-   		// Your custom options here
-   	}
-   }
-   ```
+
+```json
+{
+  "extends": "@harperdb/code-guidelines/tsconfig.node.json",
+  "compilerOptions": {
+    // Your custom options here
+  }
+}
+```
+
 3. Finally, use TypeScript or Node.js Type Stripping!
-   ```bash
+
+```bash
    npx tsc
    # or
    node src/index.ts
-   ```
+```
 
 Configurations are based off of the popular [tsconfig bases](https://github.com/tsconfig/bases) project.
 
