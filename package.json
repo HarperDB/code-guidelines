@@ -1,7 +1,7 @@
 {
 	"name": "@harperdb/code-guidelines",
 	"description": "Coding Guidelines for Harper repositories. Includes types, linting, and formatting.",
-	"version": "0.0.3",
+	"version": "0.0.4",
 	"type": "module",
 	"exports": {
 		"./tsconfig.node.json": "./tsconfig.node.json",
