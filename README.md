@@ -24,45 +24,29 @@ We use [ESLint](https://eslint.org/) to enforce code quality and integrate Prett
 
 ### Using the Harper ESLint Configuration
 
-1. Install the required dependencies:
-
-```bash
-npm i --save-dev @harperdb/code-guidelines eslint eslint-config-prettier eslint-plugin-prettier
-```
-
-2. Add `"eslint": "@harperdb/code-guidelines/eslint"` to **package.json**.
-
-3. Run ESLint:
-
-```bash
-npx eslint .
-```
-
-### Extending the Configuration
-
-You can extend or override the base configuration by adding your own rules after importing the Harper config.
+You must create a local ESLint configuration that imports Harper's ESLint configuration, then you can extend or override the base configuration by adding your own rules.
 
 For more detailed information about extending configurations, see the [ESLint Configuration Files documentation](https://eslint.org/docs/latest/use/configure/configuration-files#extending-configurations).
 
 1. Install the required dependencies:
 
 ```bash
-npm i --save-dev @harperdb/code-guidelines eslint eslint-config-prettier eslint-plugin-prettier
+npm i --save-dev @harperdb/code-guidelines eslint prettier
 ```
 
 2. Create an `eslint.config.mjs` file in your project root:
 
 ```javascript
-import harperConfig from "@harperdb/code-guidelines/eslint.config.mjs";
+import harperConfig from '@harperdb/code-guidelines/eslint';
 
 export default [
-  ...harperConfig,
-  // Your custom configuration here
-  {
-    rules: {
-      // Override or add custom rules
-    },
-  },
+	...harperConfig,
+	// Your custom configuration here
+	{
+		rules: {
+			// Override or add custom rules
+		},
+	},
 ];
 ```
 
@@ -88,10 +72,10 @@ For example, to use the base Node.js configuration (supporting Node.js v20 or la
 
 ```json
 {
-  "extends": "@harperdb/code-guidelines/tsconfig.node.json",
-  "compilerOptions": {
-    // Your custom options here
-  }
+	"extends": "@harperdb/code-guidelines/tsconfig.node.json",
+	"compilerOptions": {
+		// Your custom options here
+	}
 }
 ```
 
