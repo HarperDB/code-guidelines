@@ -18,34 +18,23 @@ export default defineConfig([
 
 	// JavaScript configuration (only applies to JS files)
 	{
-		files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
+		files: ['**/*.js', '**/*.jsx', '**/*.mjs'],
 		...js.configs.recommended,
 		languageOptions: {
 			sourceType: 'module',
 		},
-		rules: {
-			'no-undef': 'off', // disable no-undef as it doesn't work well with Harper's global variables
-			'no-console': 'off',
-			'eqeqeq': 'warn',
-			'no-unused-vars': [
-				'warn',
-				{
-					argsIgnorePattern: '^_',
-					varsIgnorePattern: '^_',
-				},
-			],
-		},
+		rules: {}, // Include additional JS-specific rules here
 	},
 
 	// TypeScript configuration (only applies to TS files)
-	...tseslint.configs.recommended.rules,
-	...tseslint.configs.recommendedTypeChecked.rules,
 	{
-		files: ['**/*.ts', '**/*.tsx', '**/*.mts', '**/*.cts'],
+		files: ['**/*.ts', '**/*.tsx', '**/*.mts'],
+		extends: [...tseslint.configs.recommended, ...tseslint.configs.recommendedTypeChecked],
 		languageOptions: {
 			parser: tseslint.parser,
 			parserOptions: {
 				sourceType: 'module',
+				project: './tsconfig.json',
 			},
 		},
 		plugins: {
@@ -53,12 +42,8 @@ export default defineConfig([
 		},
 		rules: {
 			// TypeScript-specific overrides
-			'@typescript-eslint/no-undef': 'off', // disable no-undef as it doesn't work well with Harper's global variables
-			'@typescript-eslint/no-console': 'off',
 			'@typescript-eslint/no-explicit-any': 'off',
-			'@typescript-eslint/eqeqeq': 'warn',
 			'@typescript-eslint/explicit-function-return-type': 'warn',
-			'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
 		},
 	},
 
@@ -81,6 +66,17 @@ export default defineConfig([
 
 	// Optional additional rules
 	{
-		rules: {},
+		rules: {
+			'no-undef': 'off', // disable no-undef as it doesn't work well with Harper's global variables
+			'no-console': 'off',
+			'eqeqeq': 'warn',
+			'no-unused-vars': [
+				'warn',
+				{
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+				},
+			],
+		},
 	},
 ]);
