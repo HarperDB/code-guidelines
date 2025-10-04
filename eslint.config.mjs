@@ -42,8 +42,14 @@ export default defineConfig([
 		},
 		rules: {
 			// TypeScript-specific overrides
-			'@typescript-eslint/no-explicit-any': 'off',
 			'@typescript-eslint/explicit-function-return-type': 'warn',
+			'@typescript-eslint/no-explicit-any': 'off',
+
+			// Turn off errors for Harper global typing
+			'@typescript-eslint/no-unsafe-call': 'off',
+			'@typescript-eslint/no-unsafe-member-access': 'off',
+			'@typescript-eslint/no-unsafe-assignment': 'off',
+			'@typescript-eslint/no-unsafe-return': 'off',
 		},
 	},
 

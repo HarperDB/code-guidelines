@@ -6,8 +6,7 @@
 	"exports": {
 		"./tsconfig.node.json": "./tsconfig.node.json",
 		"./prettier": "./prettier.config.js",
-		"./eslint": "./eslint.config.js",
-		"./eslint-ts": "./eslint-ts.config.js"
+		"./eslint": "./eslint.config.mjs"
 	},
 	"license": "Apache-2.0",
 	"peerDependencies": {
