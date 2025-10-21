@@ -38,8 +38,9 @@ npm i --save-dev @harperdb/code-guidelines eslint prettier
 
 ```javascript
 import harperConfig from '@harperdb/code-guidelines/eslint';
+import { defineConfig } from 'eslint/config';
 
-export default [
+export default defineConfig([
 	...harperConfig,
 	// Your custom configuration here
 	{
@@ -47,7 +48,7 @@ export default [
 			// Override or add custom rules
 		},
 	},
-];
+]);
 ```
 
 3. Run ESLint:
