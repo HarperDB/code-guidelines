@@ -78,6 +78,8 @@ Every project should have a CONTRIBUTING.md, even if just to say that contributi
 TODO
 ```
 
+_Copy the [CONTRIBUTING.md](https://github.com/HarperFast/.github/blob/main/CONTRIBUTING.md) from `HarperFast/.github`_
+
 ## AGENTS.md
 
 A minimal, agent-specific document _complementary_ to the `README.md` and `CONTRIBUTING.md`. It answers _what does an agent need to know that it **cannot reliably infer** from existing documentation?_. Furthermore, it does **not replace or duplicate** existing documentation.
@@ -136,16 +138,16 @@ Review `README.md` and `CONTRIBUTING.md` for all relevant repository information
 
 TODO
 
-_Copy the [CODE_OF_CONDUCT.md](../CODE_OF_CONDUCT.md) from this repo_
+_Copy the [CODE_OF_CONDUCT.md](https://github.com/HarperFast/.github/blob/main/CODE_OF_CONDUCT.md) from `HarperFast/.github`_
 
 ## SECURITY.md
 
 TODO
 
-_Copy the [SECURITY.md](../SECURITY.md) from this repo_
+_Copy the [SECURITY.md](https://github.com/HarperFast/.github/blob/main/SECURITY.md) from `HarperFast/.github`_
 
 ## SUPPORT.md
 
 TODO
 
-_Copy the [SUPPORT.md](../SUPPORT.md) from this repo_
+_Copy the [SUPPORT.md](https://github.com/HarperFast/.github/blob/main/SUPPORT.md) from `HarperFast/.github`_
