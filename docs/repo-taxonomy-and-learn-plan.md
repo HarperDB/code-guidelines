@@ -1,133 +1,124 @@
-# Repo Taxonomy, Template/Example Separation, and Learn Guide Plan
+# Harper Repo Taxonomy
 
-Status: draft for group review
+Status: **proposed — for team review**
 Owner: Ethan
-Related: HarperFast/v5-upgrade (upgrade plan), HarperFast/ospo, create-harper
 
-## Purpose
+## Why this exists
 
-Settle three things that have been circling:
+We maintain, upgrade, test, and reference dozens of repos — platform, plugins, templates, examples, guide backings, blog/demo companions — with no shared classification of what each is *for* or what upkeep it is owed. The result is staleness with no signal, a v-upgrade campaign with no defined scope, "is this a template or an example?" confusion, and repos that quietly rot because nothing said whether they were supposed to be kept alive.
 
-1. The canonical separation between templates and examples, documented so it stops being re-litigated.
-2. An organization scheme for the repos we have to maintain, upgrade, and test, classified by maintenance obligation rather than by surface type.
-3. A concrete plan for the Learn section guide repos, including the move off `git clone` and onto create-harper, and how those guides stay correct over time.
+This taxonomy fixes that by giving **every repo exactly one type**, and each type a clear contract: its maintenance obligation, its test contract, its versioning, and its lifecycle.
 
-## Core principle
+## Scope: public-facing repos only
 
-Maintain a small canonical source of truth, derive or generate everything else, and scale a thing's correctness obligation to how much depends on it downstream.
+This taxonomy is for **public-facing repos** — the ones developers consume, which carry the heaviest and most careful maintenance needs. Internal repos sit *outside* it and don't get a type:
 
-Two failure modes are distinct and must be solved separately:
+- **Customer POCs** — proof-of-concept work built for a specific customer.
+- **Experimentation / spikes** — research or throwaway repos.
+- **Meta repos** — org tooling and process, e.g. `ospo` itself.
 
-- **Code rot.** The code no longer runs on current Harper. Mechanically detectable. Caught by version-matrix CI. No human required.
-- **Prose rot.** The code runs but the surrounding prose, config snippets, or expected outputs no longer match it. No test catches this by default. This is the failure mode that killed the old Learn system, and tagged commits never addressed it.
+These may adopt their own light conventions, but they're explicitly out of scope here.
 
-Most of the maintenance burden we have been dreading is prose rot. The fix is to stop hand-copying code and outputs into prose and instead bind prose to the canonical code so drift breaks a build.
+## The model in one line
 
-## Templates vs Examples: the canonical definition
+A repo's **type** is set by two questions:
 
-The boundary is the **contract**, not the amount of code. Volume follows from purpose; it does not define the category.
+- **What is it *for*?** (its contract) — build from it, read it, follow it, or freeze it.
+- **What upkeep does it owe?** (its maintenance band) — tracked forever, or frozen in time.
 
-### Template
+Everything else — how it's tested, where it lives, what version it targets — falls out of the type.
 
-- **You build from it.** Its code exists to be extended.
-- **Success condition:** you can start editing immediately with nothing to delete.
-- **Permitted content:** scaffolding, project layout, config, optionally one naive homepage and one trivial data route or table. Nothing opinionated that a user would have to tear out.
-- **Purpose:** a starting point across a matrix of choices (language, framework).
+## The 5 types
 
-### Example
+| Type | What it's *for* | Upgrade obligation | Test contract | Lifecycle |
+|------|-----------------|--------------------|----------------|-----------|
+| **Core** | Platform, plugins, first-party apps — *produces* the versions everyone else consumes (`harper`, `studio`, `nextjs`, `status-check`) | Always current; it *is* the version | Full CI: unit / integration / e2e | Rarely — only if genuinely no longer maintained |
+| **Template** | **Build from it** — a starting point you modify into your own thing | Track current Harper | By functional surface: smoke (generic) → e2e (advanced) | Retire only if obsolete |
+| **Example** | **Read from it** — a worked pattern you study and adapt | Track current Harper | e2e on the pattern | Retire only if obsolete |
+| **Guide** | **Follow it** — an example *plus* narrated Learn content (start → build → end) | Track current Harper | e2e on the final state | Retire only if obsolete |
+| **Snapshot** | **A moment in time** — the companion to a blog post, talk, or video | **None — frozen** | Optional, against its **pinned** version only | Archived once its major is past |
 
-- **You learn from it.** Its code exists to be read.
-- **Success condition:** one pattern shown working correctly.
-- **Permitted content:** real endpoints, opinionated choices (TypeScript over JS, Next over Astro), whatever the pattern needs.
-- **Purpose:** demonstrate a feature or development pattern.
+**Core / Template / Example / Guide are the "Maintained" world** (track current Harper, tested, referenced ~forever). **Snapshot is the "frozen" world.** That split — maintained vs frozen — is the single most important line in the whole taxonomy.
 
-### Consequences of the cut
+## Template has two tiers
 
-- A blog-post demo and the generic Next.js example are the **same species**: both are examples. There is no third category for "content."
-- We do **not** maintain examples across the full framework and language matrix. We maintain a few **seeds**, meaning one strong example per genuinely distinct pattern, not one per framework. The long tail is produced on demand by agents extrapolating from the seeds, the skills, and reference docs. An on-demand Svelte caching app is only as trustworthy as the canonical caching example and the caching skill it draws from. Those seeds are the substrate; that is why they are maintained and the matrix is not.
-- Test obligation falls out of the contract: templates get a smoke test (does it scaffold and boot); examples get a correctness test (does the pattern actually work), because people copy them as truth.
+Both are *build-from* (that's what makes them templates), but they differ in scope and home:
 
-## Repo taxonomy by maintenance tier
+- **Generic template** — broad, opinion-light getting-started scaffold. Lives **in create-harper** (`template-vanilla`, `template-react-ts`, `template-react-ssr`, …). Smoke-tested (does it scaffold and boot). This is the curated getting-started menu.
+- **Advanced template** — a complex, domain-specific starting point. Non-functional on its own; becomes useful after specific modification (e.g. `template-markdown-prerender` — stand it up, configure instances, deploy for a customer). Lives **standalone**, **e2e-tested** (it ships real logic that must work), and does **not** belong in the generic getting-started menu.
 
-Classify every non-core, non-customer repo into one tier. The tier defines its test contract and its upgrade obligation. This is what the repo-health dashboard should encode: not "is it green" but "is it meeting its tier's contract."
+The lesson: **a template's complexity does not make it an example.** `template-markdown-prerender` is complex *and* build-from → an advanced template. `nextjs-example` is complete *and* read-from → an example. Contract decides the type, not size.
 
-| Tier | What it is | Test contract | Upgrade obligation | Ongoing cost |
-|------|-----------|----------------|--------------------|--------------|
-| **Template** | Build-from starting point | Smoke test: scaffolds and boots, on every Harper release | Track current Harper | Low |
-| **Example (seed)** | Maintained canonical pattern | End-to-end suite on final state, on the version matrix | Track current Harper | Medium |
-| **Guide repo (step-by-step)** | Backs a Learn guide | End-to-end suite on final state + prose binding (see Learn plan) | Track current Harper | Medium, mostly automated |
-| **Example (one-off / pinned)** | Blog/demo tied to a moment in time | Suite runs on its **pinned** Harper version only | None. Pinned and frozen | Near zero |
+## The rules that decide a type
 
-### The key move on one-off examples
+1. **Contract decides Template vs Example vs Guide.** Build-from → Template. Read-from → Example. Follow-a-narration → Guide. (Independent of how big or complex it is.)
+2. **Functional surface decides the test contract — not the type.** A blank scaffold needs only a smoke test; anything carrying real logic (an advanced template *or* an example) needs e2e. So "Template = smoke" is wrong; test depth scales with what there is to break.
+3. **Maintenance obligation decides Maintained vs Snapshot.** Kept current → Maintained. Frozen to a moment → Snapshot.
 
-Not every example deserves equal upkeep, and trying to keep all of them green forever is the maintenance tax we keep hitting. A demo written to make a point at a moment in time should be **pinned and allowed to age**:
+## Guide vs Snapshot: the invariant that kills content staleness
 
-- Stamp it "written for Harper 5.x."
-- Pin its dependencies.
-- Run its suite against its pinned version only.
-- Do not chase it forward.
+Guides and Snapshots both "back content," so the line must be explicit:
 
-A pinned demo going red on a future major is **expected**, not a failure. The dashboard must treat it that way or the green/red signal becomes noise.
+- **Guide** backs **canonical Learn-section content** (and, later, possibly Studio-embedded guides). Living, maintained, tracks current Harper.
+- **Snapshot** backs a **dated artifact** — a blog post, conference talk, video, dev-rel tutorial. Frozen, version-stamped, eventually archived.
 
-Promotion path: a one-off that turns out to be frequently referenced gets **promoted** into the seed tier and joins the version matrix. The long tail stays frozen.
+> **The invariant: a dated artifact never references a living repo. living ↔ living, frozen ↔ frozen.**
 
-### How this relates to the v5-upgrade plan
+If marketing or dev-rel wants to build content around a living Guide/Template/Example, they must **snapshot it first** — clone its current state into a frozen, version-stamped Snapshot companion to the post. The blog points at the snapshot (which never moves); the living repo stays free to evolve because nothing dated depends on its current state.
 
-The v5-upgrade effort is the **upgrade workflow for the Template and Seed tiers**. Those are the repos that must track current Harper, so they are the ones an upgrade campaign targets. Pinned one-offs are explicitly out of scope for forward upgrades by design. Once each repo carries a tier label, the upgrade plan's scope is just "every repo in Template and Seed tiers," and the dashboard can report upgrade status per tier.
+This is the policy that eliminates the entire class of "the tutorial broke because the repo moved." Dev-rel guideline: *making a tutorial? snapshot the repo, stamp the Harper version, date the post. Want something longer-living instead? contribute to the Learn guides.*
 
-## Learn guide plan
+(Worth making snapshotting trivial — a one-command fork + version-stamp — or people will skip it. Not now, but soon.)
 
-### Decision: clone becomes create-harper (settled)
+## create-harper's role
 
-The old guides do two git jobs. Both change, but differently:
+create-harper is the **standard getting-started UX** and the home of **generic templates only**. Advanced templates and examples live standalone — they are not getting-started options and should not clutter the picker. (create-harper *could* later offer "start from example X" as a convenience; that's a product nicety, explicitly out of scope here.)
 
-- **The clone** (`git clone create-your-first-application`) is the starting state. On the first-app page it is barely a clone at all: the learner hand-creates `schema.graphql` and `config.yaml` in the next sections, so the repo is really just scaffolding. This becomes `npm create harper@latest <name>` selecting a near-blank **template**. The prose body continues unchanged ("open `schema.graphql`, add...").
-- **The checkpoints** (the `checkout 01-create-table` callouts) are stage validation. These become create-harper recovery verbs against resolved-tree snapshots, not raw git for the learner. Branches stay in the canonical repo as the maintainer source; the learner never types git.
+Implication for Learn guides: a guide's **start** is *often* create-harper (pick a template), the prose drives the **build**, and the **Guide repo** is the validated **end**. But the start isn't always create-harper output — a guide that builds on an earlier guide starts from that guide's end state instead. So "start = create-harper" is the common case, not a rule.
 
-### Decision: default to end-only checkpoints (settled, with an escape hatch)
+## Version stamping
 
-A green template start and a green final suite **bound the middle**. Intermediate steps have no independent failure mode: if start boots and end passes and the prose is accurate, an intermediate stage cannot be silently broken in a way the endpoints do not already catch. Testing N tagged commits pays N setups to verify what 2 already prove.
+Every **non-Core** repo records the Harper **major** it targets (minor optional). Core *produces* versions, so this doesn't apply to it.
 
-So: guides start from a template and build through to a single end snapshot. The only sacrifice is that a learner who diverges mid-guide can ask "is my final state correct," not "is my step-3 state correct." On the first-app page this costs almost nothing, since the back half (create/read/query) are runtime API calls with no file-state checkpoint anyway; we were only ever offering checkpoints for 2 of 6 steps.
+- For **Snapshots** this is load-bearing — it's the whole "valid as of Harper X" signal.
+- For **Maintained** types it records the floor and scopes upgrades.
 
-**Escape hatch:** make checkpoint granularity a property of the guide, not a global rule. Default end-only. Add intermediate checkpoints only where assembly is long enough that mid-flight recovery earns its maintenance (the caching guides may qualify; the dog-table page does not).
+Where it lives: when the repo has a `package.json` (most do), declare it in the **`engines`** or **`devEngines`** field — a standard, tooling-agnostic spot anyone can read without a GitHub login or API. For the rare repo without one, a line in the README.
 
-### Decision: bind prose to code (the prose-rot fix)
+## Snapshot lifecycle
 
-Code blocks, config snippets, and expected outputs in a guide must not be hand-copied. They drift silently. Bind them to the canonical repo so drift breaks the docs build:
+A Snapshot built for major X stays *valid* for all of X's life (minor releases are non-breaking). So:
 
-- **Mechanism to prototype first:** a test in the guide repo asserts that the doc's code/output blocks match the repo's files and recorded test output. Given Docusaurus docs and separate repos, assert-in-CI is less invasive than a transclusion include directive to start. The guide keeps its blocks; a check fails when they drift; an agent repairs the break and opens a PR; a human approves.
-- This is the single open decision worth resolving before scaling to the caching guides: **assert-in-CI** (docs and repo live apart, coupled by a check) vs **include directive** (repo is source, docs are a view). Prototype assert-in-CI on the first-app page.
+- **Frozen but open** during its major's life: content untouched, but issues/PRs stay enabled so a user can land a bug fix.
+- **Literally archived when the next Harper major goes GA.** We move the maintained world onto a new major as soon as it ships, so a Snapshot's era ends at the same moment. (Archiving is read-only, not deletion — it stays referenceable for its post.) *Alternative if we want more headroom: wait for the old major's full EOL.*
+- A Snapshot going red on a *future* major is **expected, not a failure**, and shouldn't be treated as one.
 
-### Decision: collapse Local/Fabric tabs to one flow (settled)
+A Snapshot that turns out to be frequently referenced can be **promoted** to a maintained Example/Template and joins the version matrix.
 
-The first-app page repeats Local/Fabric tabs per section, but they differ only at the edges: same schema, same config, same dev loop. The real divergence is auth headers, the localhost-to-cluster URL swap, and the deploy step. This confirms it is **one flow with two deploy targets**, not two flows.
+## How our repos classify (worked examples)
 
-- Collapse the per-section tabs.
-- Surface the Fabric delta once (base URL + Authorization).
-- Keep the "Bonus: Deploy to Fabric" section as the single genuine fork.
+- `harper`, `studio`, `nextjs` (the plugin), `status-check` → **Core**
+- create-harper `template-vanilla`, `template-react-ts-ssr`, … → **Template (generic)**
+- `template-markdown-prerender` → **Template (advanced)**, Maintained (recently upgraded to v5) — correctly named
+- `nextjs-example` → **Example** — correctly named
+- `create-your-first-application`, the caching-guide repos → **Guide**
+- benchmark / conference / blog-demo repos → **Snapshot**
+- A customer's modified deployment of an advanced template (e.g. internal `markdown-prerender`) → **out of scope** (customer/internal repo), not a duplication problem — that's a template instantiated as intended.
 
-Any difference deeper than the deploy command is a product signal to raise, not a docs problem to write around.
+## Naming conventions
 
-### Decision: keep the human step-by-step guide (settled)
+Today's naming is inconsistent — `template-markdown-prerender` (prefix) but `nextjs-example` (suffix). Mixed prefix/suffix means you can't tell a repo's type from its name, and repos of the same type don't group together when listed. That's the worst of both worlds.
 
-Do not collapse guides into pure tool output. The step-explained guide is where the **why** lives: the rationale for extending a table in a custom resource, the assembly logic, the correctness reasoning. Offline users, enterprise evaluators, and security reviewers need it, and current agents lean on exactly this kind of human explanation because they learn from it. Keep the existing content split: **reference for facts, guide for assembly.** Change only the orientation so the guide names the tooling (run create-harper, pick a template, then add this).
+**Decision: a consistent type prefix** — `template-`, `example-`, `guide-`. Core and Snapshot go unmarked (Core repos are well-known by name; Snapshots are named after their content). New repos follow this; existing repos get renamed as they're next touched.
 
-## Concrete next steps
+Alternatives considered:
+- **Suffix** (`-template`, `-example`, `-guide`) — reads more naturally, but doesn't group a type together alphabetically.
+- **No marker, type in metadata only** — relies solely on the `package.json` field; keeps names free but loses the at-a-glance signal.
 
-Order matters. The tooling is worth nothing until there is a tested canonical sequence to publish.
+## Relationship to upgrade planning
 
-1. **Label every repo with a tier.** Template, Seed, Guide, or Pinned. This unblocks the dashboard and scopes the v5-upgrade plan. Cheap, do first.
-2. **Pin and freeze the one-off tier.** Stamp Harper version, pin deps, point their CI at the pinned version, stop chasing them. Removes the bulk of the perceived maintenance tax immediately.
-3. **Pick the seed set.** Decide what counts as a genuinely distinct pattern that earns a maintained example. Everything downstream (test load, doc priority, what create-harper defaults to, what generation extrapolates from) hangs off this list. This is the decision still unsettled and it should be made next.
-4. **Pilot the Learn rewrite on the first-app page.** It is the thinnest target: near-blank template, two file-state steps, end-only snapshot. Rewrite clone to create-harper, collapse the tabs, and prototype assert-in-CI prose binding here before touching caching.
-5. **Build the create-harper recovery verbs** against the piloted snapshot format, then the snapshot-publishing pipeline (version-keyed tarballs).
-6. **Stand up the version-matrix CI** for Template and Seed tiers. This is the v5-upgrade plan's mechanical engine.
-7. **Layer agentic upkeep last.** Once the documented best practice is solid (the catch-up work with Austin is the spec-gathering for this), add triggers: a release reds a build, an agent diffs old vs new output, rewrites the affected blocks and surrounding prose, opens a PR, human approves. Then add the weekly sweep and dependabot/major-version triggers.
+The upgrade scope is exactly **every Core, Template, Example, and Guide repo** — the Maintained world. Snapshots are explicitly out of scope for forward upgrades by design. Once every repo carries a type + target major, an upgrade campaign's scope is simply "the Maintained types," and each repo's obligation is "meeting its type's contract."
 
-## Open decisions
+## Feedback
 
-- **The seed set.** What patterns earn a maintained example. Blocks step 3 above. Settle next.
-- **Prose-binding mechanism.** Assert-in-CI vs include directive. Prototype assert-in-CI on the first-app page, then commit.
-- **create-harper verb ownership.** Does create-harper own resume/check/verify, or does recovery live in a separate tool. Owning them unifies the getting-started story (avoids the sprawl we are removing); versioning the snapshot fetch separately keeps the CLI's release cadence decoupled from tutorial edits.
-- **Runtime-step affordance.** Steps that are API calls (create/read/query) have no file snapshot to diff. Decide whether they get a `--verify` that hits the endpoint and checks the response, or stay prose-only.
+This is proposed as **decided** — the aim is alignment, not re-litigation. The two spots most open to input are the **naming convention** (the prefix choice) and the **Snapshot archive trigger**. Everything else we'll roll with unless there's a strong objection.
