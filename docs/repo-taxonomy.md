@@ -87,7 +87,7 @@ Where it lives: when the repo has a `package.json` (most do), declare it in the 
 
 ## Snapshot lifecycle
 
-A Snapshot built for major X stays *valid* for all of X's life (minor releases are non-breaking). So:
+A Snapshot built for major X should stay valid across that major's minors (which aim to be non-breaking, even if that's never guaranteed). So:
 
 - **Frozen but open** during its major's life: content untouched, but issues/PRs stay enabled so a user can land a bug fix.
 - **Literally archived when the next Harper major goes GA.** We move the maintained world onto a new major as soon as it ships, so a Snapshot's era ends at the same moment. (Archiving is read-only, not deletion — it stays referenceable for its post.) *Alternative if we want more headroom: wait for the old major's full EOL.*
@@ -99,21 +99,17 @@ A Snapshot that turns out to be frequently referenced can be **promoted** to a m
 
 - `harper`, `studio`, `nextjs` (the plugin), `status-check` → **Core**
 - create-harper `template-vanilla`, `template-react-ts-ssr`, … → **Template (generic)**
-- `template-markdown-prerender` → **Template (advanced)**, Maintained (recently upgraded to v5) — correctly named
-- `nextjs-example` → **Example** — correctly named
+- `template-markdown-prerender` → **Template (advanced)**, Maintained (recently upgraded to v5)
+- `nextjs-example` → **Example**
 - `create-your-first-application`, the caching-guide repos → **Guide**
 - benchmark / conference / blog-demo repos → **Snapshot**
 - A customer's modified deployment of an advanced template (e.g. internal `markdown-prerender`) → **out of scope** (customer/internal repo), not a duplication problem — that's a template instantiated as intended.
 
-## Naming conventions
+## Type tagging (not naming)
 
-Today's naming is inconsistent — `template-markdown-prerender` (prefix) but `nextjs-example` (suffix). Mixed prefix/suffix means you can't tell a repo's type from its name, and repos of the same type don't group together when listed. That's the worst of both worlds.
+Repo names today are inconsistent about type (`template-markdown-prerender` vs `nextjs-example`) — so rather than standardize a naming scheme, **keep names clean and don't encode type in them at all.** Record the type as a **GitHub topic** instead — `template` / `example` / `guide` (Core and Snapshot optional).
 
-**Decision: a consistent type prefix** — `template-`, `example-`, `guide-`. Core and Snapshot go unmarked (Core repos are well-known by name; Snapshots are named after their content). New repos follow this; existing repos get renamed as they're next touched.
-
-Alternatives considered:
-- **Suffix** (`-template`, `-example`, `-guide`) — reads more naturally, but doesn't group a type together alphabetically.
-- **No marker, type in metadata only** — relies solely on the `package.json` field; keeps names free but loses the at-a-glance signal.
+Topics beat a name prefix: a repo can pick up other taxonomy dimensions later, can change type as it matures without a rename, and names stay autocomplete-friendly when you're working across several example/template repos.
 
 ## Relationship to upgrade planning
 
@@ -121,4 +117,4 @@ The upgrade scope is exactly **every Core, Template, Example, and Guide repo** �
 
 ## Feedback
 
-This is proposed as **decided** — the aim is alignment, not re-litigation. The two spots most open to input are the **naming convention** (the prefix choice) and the **Snapshot archive trigger**. Everything else we'll roll with unless there's a strong objection.
+This is proposed as **decided** — the aim is alignment, not re-litigation. The spot most open to input is the **Snapshot archive trigger**. Everything else we'll roll with unless there's a strong objection.
