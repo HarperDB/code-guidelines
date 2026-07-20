@@ -16,7 +16,7 @@ This policy makes the public estate deliberate: every active public repo has a k
 
 This policy applies to **active, public** repositories in the Harper GitHub organization. It does not cover internal or private repositories (separate policy), nor archived repositories — except for the archival process itself (see [Public archived](#public-archived)).
 
-Its companion is the [repository taxonomy](repo-taxonomy.md), which defines the repository *types* referenced throughout.
+Its companion is the [repository taxonomy](repository-taxonomy.md), which defines the repository *types* referenced throughout.
 
 ## Requirements for active public repositories
 
@@ -30,7 +30,7 @@ Ownership can be transferred, and a creating team need not be the maintaining te
 
 ### One taxonomy type, declared as a GitHub topic
 
-Every repo is classified as exactly one [taxonomy type](repo-taxonomy.md) and records that type as a **GitHub topic** — one of `product`, `plugin`, `application`, `library`, `template`, `example`, `guide`, `snapshot`, or `meta`. Type is never encoded in the repo name; the topic is the source of truth, so a repo can be re-typed as it matures without a rename.
+Every repo is classified as exactly one [taxonomy type](repository-taxonomy.md) and records that type as a **GitHub topic** — one of `product`, `plugin`, `application`, `library`, `template`, `example`, `guide`, `snapshot`, or `meta`. Type is never encoded in the repo name; the topic is the source of truth, so a repo can be re-typed as it matures without a rename.
 
 ### Required meta documents
 
