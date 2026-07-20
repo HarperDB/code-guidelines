@@ -2,7 +2,7 @@
 
 Every **public** repository gets **exactly one type**. The type establishes a baseline maintenance contract: versioning, upgrades, testing, etc.
 
-These types do not apply to Harper's internal and private repositories; a separate taxonomy system available privately for Harper engineers.
+These types do not apply to Harper's internal and private repositories; a separate taxonomy system is available privately for Harper engineers.
 
 The types defined here feed the [public repository policy](repository-policy.md), which sets what every active public repo must commit to.
 
