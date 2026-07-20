@@ -1,120 +1,142 @@
-# Harper Repo Taxonomy
+# Harper Public Repository Taxonomy
 
-Status: **proposed — for team review**
-Owner: Ethan
+Every **public** repository gets **exactly one type**. The type establishes a baseline maintenance contract: versioning, upgrades, testing, etc.
 
-## Why this exists
+These types do not apply to Harper's internal and private repositories; a separate taxonomy system available privately for Harper engineers.
 
-We maintain, upgrade, test, and reference dozens of repos — platform, plugins, templates, examples, guide backings, blog/demo companions — with no shared classification of what each is *for* or what upkeep it is owed. The result is staleness with no signal, a v-upgrade campaign with no defined scope, "is this a template or an example?" confusion, and repos that quietly rot because nothing said whether they were supposed to be kept alive.
+The types defined here feed the [public repository policy](repository-policy.md), which sets what every active public repo must commit to.
 
-This taxonomy fixes that by giving **every repo exactly one type**, and each type a clear contract: its maintenance obligation, its test contract, its versioning, and its lifecycle.
+> This taxonomy may not be perfect and could change over time. Refinement is expected. If you have something that doesn't cleanly fit, or you see a new classification pattern please share and help improve the system!
 
-## Scope: public-facing repos only
+## Types
 
-This taxonomy is for **public-facing repos** — the ones developers consume, which carry the heaviest and most careful maintenance needs. Internal repos sit *outside* it and don't get a type:
+| Type | Definition | Examples | Upgrade Commitment | Testing Strategy |
+|------|------------|----------|--------------|---------------|
+| **Product** | A standalone project users directly interact with | `harper`, `harper-pro`, `studio`, `documentation`, `create-harper`, `symphony`, `skills` | Independent or tracks latest Harper | Unit/Integration/E2E + Matrix of supported runtimes |
+| **Library** | Engineered on and used as a dependency | `rocksdb-js`, `integration-testing`, `extended-iterable`, `structon` | Independent or tracks latest Harper | Unit test is usually sufficient; sometimes integration tests too |
+| **Plugin** | Harper Plugins; extends Harper functionality | `nextjs`, `astro`, `vite`, `oauth`, `http-cache`, `http-router`, `prerender-plugin`, `acl-connect` | Tracks latest Harper | Integration tests |
+| **Application** | Runs on Harper; a deployable, feature-complete first-party app | `status-check`, `image-optimizer`, `risk-query` | Tracks latest Harper | Integration/E2E with Harper latest |
+| **Template** | Build from it — a starting point you modify | `harper-ecommerce-template`, `fastify-template`, `template-redirector` | Tracks latest Harper | Smoke/Integration/E2E tests with Harper latest |
+| **Example** | Read from it — a worked pattern you study and adapt | `agent-example-harper`, `full-page-caching`, `nextjs-example` | Tracks latest Harper | Integration/E2E with Harper latest |
+| **Guide** | Follow it — an example plus narrated Learn content (start → build → end) | `create-your-first-application`, `caching-guide-example` | Tracks latest Harper | Integration/E2E of the final state with Harper latest |
+| **Snapshot** | Companion app, example, or benchmark to a blog post, talk, or video | `twilio-sms`, `kafka-v-harper-perf-test` | Frozen | Optional, vs its pinned Harper version only |
+| **Meta** | Public, but supports the org rather than being consumed as a product | `.github`, `code-guidelines`, `ai-review-prompts`, `rocksdb-prebuilds`, `github-app` | Independent | Independent |
 
-- **Customer POCs** — proof-of-concept work built for a specific customer.
-- **Experimentation / spikes** — research or throwaway repos.
-- **Meta repos** — org tooling and process, e.g. `ospo` itself.
+### Classification Decision Tree
 
-These may adopt their own light conventions, but they're explicitly out of scope here.
+Follow this decision tree to assist with classifying active, public repositories.
 
-## The model in one line
+```mermaid
+flowchart TD
+    A{Contains a<br/>config.yaml?} -->|Yes| B{Fully-featured and<br/>meant to be used directly?}
+    A -->|No| G{A utility used<br/>within other projects?}
 
-A repo's **type** is set by two questions:
+    B -->|Yes| C{config.yaml has<br/>pluginModule / extensionModule?}
+    B -->|No| D{A starting point for<br/>the user's own development?}
 
-- **What is it *for*?** (its contract) — build from it, read it, follow it, or freeze it.
-- **What upkeep does it owe?** (its maintenance band) — tracked forever, or frozen in time.
+    C -->|Yes| Plugin([Plugin])
+    C -->|No| Application([Application])
 
-Everything else — how it's tested, where it lives, what version it targets — falls out of the type.
+    D -->|Yes| Template([Template])
+    D -->|"No — reference / learn from it"| E{Multiple steps + a page in the<br/>Documentation Learn section?}
 
-## The 5 types
+    E -->|Yes| Guide([Guide])
+    E -->|No| F{Accompanies a post, video, or talk<br/>published on the Harper website?}
 
-| Type | What it's *for* | Upgrade obligation | Test contract | Lifecycle |
-|------|-----------------|--------------------|----------------|-----------|
-| **Core** | Platform, plugins, first-party apps — *produces* the versions everyone else consumes (`harper`, `studio`, `nextjs`, `status-check`) | Always current; it *is* the version | Full CI: unit / integration / e2e | Rarely — only if genuinely no longer maintained |
-| **Template** | **Build from it** — a starting point you modify into your own thing | Track current Harper | By functional surface: smoke (generic) → e2e (advanced) | Retire only if obsolete |
-| **Example** | **Read from it** — a worked pattern you study and adapt | Track current Harper | e2e on the pattern | Retire only if obsolete |
-| **Guide** | **Follow it** — an example *plus* narrated Learn content (start → build → end) | Track current Harper | e2e on the final state | Retire only if obsolete |
-| **Snapshot** | **A moment in time** — the companion to a blog post, talk, or video | **None — frozen** | Optional, against its **pinned** version only | Archived once its major is past |
+    F -->|Yes| Snapshot([Snapshot])
+    F -->|No| Example([Example])
 
-**Core / Template / Example / Guide are the "Maintained" world** (track current Harper, tested, referenced ~forever). **Snapshot is the "frozen" world.** That split — maintained vs frozen — is the single most important line in the whole taxonomy.
+    G -->|Yes| Library([Library])
+    G -->|No| H{Standalone product / platform / interface<br/>for direct user interaction?}
 
-## Template has two tiers
+    H -->|Yes| Product([Product])
+    H -->|"No — something else"| Meta([Meta])
 
-Both are *build-from* (that's what makes them templates), but they differ in scope and home:
+    classDef type fill:#2a9d8f,stroke:#1d7268,color:#fff;
+    class Plugin,Application,Template,Guide,Snapshot,Example,Library,Product,Meta type;
+```
 
-- **Generic template** — broad, opinion-light getting-started scaffold. Lives **in create-harper** (`template-vanilla`, `template-react-ts`, `template-react-ssr`, …). Smoke-tested (does it scaffold and boot). This is the curated getting-started menu.
-- **Advanced template** — a complex, domain-specific starting point. Non-functional on its own; becomes useful after specific modification (e.g. `template-markdown-prerender` — stand it up, configure instances, deploy for a customer). Lives **standalone**, **e2e-tested** (it ships real logic that must work), and does **not** belong in the generic getting-started menu.
+## Products
 
-The lesson: **a template's complexity does not make it an example.** `template-markdown-prerender` is complex *and* build-from → an advanced template. `nextjs-example` is complete *and* read-from → an example. Contract decides the type, not size.
+The catch-all for standalone, user-facing projects that aren't a plugin, application, or library — from the platform itself down to developer-facing tools like `create-harper`. If users interact with it directly and it doesn't fit a more specific type, it's a product.
 
-## The rules that decide a type
+`harper` is the product that defines the Harper version; every other type's version commitment is measured against it. Products are either independently versioned (own release cadence) or track latest Harper.
 
-1. **Contract decides Template vs Example vs Guide.** Build-from → Template. Read-from → Example. Follow-a-narration → Guide. (Independent of how big or complex it is.)
-2. **Functional surface decides the test contract — not the type.** A blank scaffold needs only a smoke test; anything carrying real logic (an advanced template *or* an example) needs e2e. So "Template = smoke" is wrong; test depth scales with what there is to break.
-3. **Maintenance obligation decides Maintained vs Snapshot.** Kept current → Maintained. Frozen to a moment → Snapshot.
+**Upgrades & testing.** Whether it versions independently or tracks Harper, a product should be validated against the latest and upcoming Harper versions as early as possible — ideally as a pre-release step — so a new Harper release never silently breaks it. Testing is the full stack: unit, integration, and e2e across a matrix of supported runtimes.
 
-## Guide vs Snapshot: the invariant that kills content staleness
+## Plugins
 
-Guides and Snapshots both "back content," so the line must be explicit:
+A literal Harper [Plugin](https://docs.harperdb.io/reference/v5/components/overview#plugins) or [Extension](https://docs.harperdb.io/reference/v5/components/overview#extensions) component — code that extends the Harper runtime and is installed into a Harper instance. The giveaway is a `config.yaml` declaring `pluginModule:` or `extensionModule:` — including extensions slated to migrate to the plugin API.
 
-- **Guide** backs **canonical Learn-section content** (and, later, possibly Studio-embedded guides). Living, maintained, tracks current Harper.
-- **Snapshot** backs a **dated artifact** — a blog post, conference talk, video, dev-rel tutorial. Frozen, version-stamped, eventually archived.
+Plugins track latest Harper, moving in lockstep with the runtime API they extend.
 
-> **The invariant: a dated artifact never references a living repo. living ↔ living, frozen ↔ frozen.**
+**Upgrades & testing.** Plugins should be upgraded and tested against the latest and upcoming Harper versions as early as possible — ideally as a pre-release step. Integration tests against the latest Harper are the baseline.
 
-If marketing or dev-rel wants to build content around a living Guide/Template/Example, they must **snapshot it first** — clone its current state into a frozen, version-stamped Snapshot companion to the post. The blog points at the snapshot (which never moves); the living repo stays free to evolve because nothing dated depends on its current state.
+## Applications
 
-This is the policy that eliminates the entire class of "the tutorial broke because the repo moved." Dev-rel guideline: *making a tutorial? snapshot the repo, stamp the Harper version, date the post. Want something longer-living instead? contribute to the Learn guides.*
+A literal Harper [Application](https://docs.harperdb.io/reference/v5/components/applications) component — a feature-complete, deployable first-party app that runs on Harper. Like a plugin it has a `config.yaml`, but *without* `pluginModule`/`extensionModule`, and it is meant to be used directly rather than to extend the runtime.
 
-(Worth making snapshotting trivial — a one-command fork + version-stamp — or people will skip it. Not now, but soon.)
+The line against Template is completeness: an application works as-is (perhaps with light configuration); a template is a starting point you build from.
 
-## create-harper's role
+**Upgrades & testing.** Applications track latest Harper: upgraded and tested against the latest and upcoming Harper versions as early as possible — ideally as a pre-release step. Integration/e2e against the latest Harper are the baseline.
 
-create-harper is the **standard getting-started UX** and the home of **generic templates only**. Advanced templates and examples live standalone — they are not getting-started options and should not clutter the picker. (create-harper *could* later offer "start from example X" as a convenience; that's a product nicety, explicitly out of scope here.)
+## Libraries
 
-Implication for Learn guides: a guide's **start** is *often* create-harper (pick a template), the prose drives the **build**, and the **Guide repo** is the validated **end**. But the start isn't always create-harper output — a guide that builds on an earlier guide starts from that guide's end state instead. So "start = create-harper" is the common case, not a rule.
+Code you build *with* — imported as a dependency rather than run. Reserve this for true dependencies (`rocksdb-js`, `integration-testing`, `extended-iterable`).
 
-## Version stamping
+Contrast: a library is imported, an application is run, a product is interacted with. Libraries are either independently versioned or track latest Harper.
 
-Every **non-Core** repo records the Harper **major** it targets (minor optional). Core *produces* versions, so this doesn't apply to it.
+**Upgrades & testing.** Test against the latest and upcoming Harper versions as early as possible, or as a pre-release step. Unit tests are usually sufficient; add integration tests as necessary.
 
-- For **Snapshots** this is load-bearing — it's the whole "valid as of Harper X" signal.
-- For **Maintained** types it records the floor and scopes upgrades.
+## Templates
 
-Where it lives: when the repo has a `package.json` (most do), declare it in the **`engines`** or **`devEngines`** field — a standard, tooling-agnostic spot anyone can read without a GitHub login or API. For the rare repo without one, a line in the README.
+A starting point users copy and modify into their own project. Two tiers:
 
-## Snapshot lifecycle
+- **Generic** — opinion-light getting-started scaffold; lives in `create-harper`; smoke-tested.
+- **Advanced** — complex, domain-specific starting point, non/partially-functional until modified / configured (e.g. `template-markdown-prerender`); lives standalone; integration or e2e tested.
 
-A Snapshot built for major X should stay valid across that major's minors (which aim to be non-breaking, even if that's never guaranteed). So:
+Complexity doesn't make a template an example — the contract (build-from vs read-from) decides, not size.
 
-- **Frozen but open** during its major's life: content untouched, but issues/PRs stay enabled so a user can land a bug fix.
-- **Literally archived when the next Harper major goes GA.** We move the maintained world onto a new major as soon as it ships, so a Snapshot's era ends at the same moment. (Archiving is read-only, not deletion — it stays referenceable for its post.) *Alternative if we want more headroom: wait for the old major's full EOL.*
-- A Snapshot going red on a *future* major is **expected, not a failure**, and shouldn't be treated as one.
+**Upgrades & testing.** Templates track latest Harper: upgraded and tested against the latest and upcoming Harper versions as early as possible. Test depth follows the tier — smoke for generic, integration or e2e for advanced.
 
-A Snapshot that turns out to be frequently referenced can be **promoted** to a maintained Example/Template and joins the version matrix.
+## Examples
 
-## How our repos classify (worked examples)
+A complete, worked pattern users read and adapt — reference material, not necessarily something to fork and build on (thought they could). It's functional and tested, but its purpose is to be studied.
 
-- `harper`, `studio`, `nextjs` (the plugin), `status-check` → **Core**
-- create-harper `template-vanilla`, `template-react-ts-ssr`, … → **Template (generic)**
-- `template-markdown-prerender` → **Template (advanced)**, Maintained (recently upgraded to v5)
-- `nextjs-example` → **Example**
-- `create-your-first-application`, the caching-guide repos → **Guide**
-- benchmark / conference / blog-demo repos → **Snapshot**
-- A customer's modified deployment of an advanced template (e.g. internal `markdown-prerender`) → **out of scope** (customer/internal repo), not a duplication problem — that's a template instantiated as intended.
+Contrast: a template is built *from*, an example is read *from*, and a guide adds step-by-step narration.
 
-## Type tagging (not naming)
+**Upgrades & testing.** Examples track latest Harper: upgraded and tested against the latest and upcoming Harper versions as early as possible. Integration/e2e on the pattern.
 
-Repo names today are inconsistent about type (`template-markdown-prerender` vs `nextjs-example`) — so rather than standardize a naming scheme, **keep names clean and don't encode type in them at all.** Record the type as a **GitHub topic** instead — `template` / `example` / `guide` (Core and Snapshot optional).
+## Guides
 
-Topics beat a name prefix: a repo can pick up other taxonomy dimensions later, can change type as it matures without a rename, and names stay autocomplete-friendly when you're working across several example/template repos.
+An example paired with narrated Learn content that walks start → build → end, backing a canonical page in the Documentation Learn section.
 
-## Relationship to upgrade planning
+A guide is living and tracks latest Harper — that's the line against Snapshot, which freezes to a dated artifact (see [Guide vs Snapshot](#guide-vs-snapshot)).
 
-The upgrade scope is exactly **every Core, Template, Example, and Guide repo** — the Maintained world. Snapshots are explicitly out of scope for forward upgrades by design. Once every repo carries a type + target major, an upgrade campaign's scope is simply "the Maintained types," and each repo's obligation is "meeting its type's contract."
+**Upgrades & testing.** Guides track latest Harper: upgraded and tested against the latest and upcoming Harper versions as early as possible. Integration/e2e on the guide's final state.
 
-## Feedback
+## Snapshots
 
-This is proposed as **decided** — the aim is alignment, not re-litigation. The spot most open to input is the **Snapshot archive trigger**. Everything else we'll roll with unless there's a strong objection.
+A frozen companion to a dated artifact — a blog post, talk, video, or benchmark. Pinned to the Harper version it was built against and never upgraded.
+
+**Upgrades & testing.** None — a snapshot is never upgraded. Any tests run only against its pinned Harper version.
+
+- **Frozen but open** during its major's life: content untouched, issues/PRs stay enabled for bug fixes.
+- **Archived when the next Harper major goes GA.** Read-only, not deleted — stays referenceable.
+- Going red on a *future* major is expected, not a failure.
+- A frequently-referenced Snapshot can be **promoted** to a maintained Example/Template.
+
+### Guide vs Snapshot
+
+> **A dated artifact never references a living repo. living ↔ living, frozen ↔ frozen.**
+
+- **Guide** backs canonical Learn content. Living, tracks current Harper.
+- **Snapshot** backs a dated artifact (blog, talk, video). Frozen, version-stamped, eventually archived.
+
+To build content on a living repo, **snapshot it first** — fork its current state into a version-stamped Snapshot and point the post at that. The living repo stays free to evolve; nothing dated depends on its current state.
+
+## Meta
+
+Public repositories that support the org or its products rather than being consumed as a product themselves — org profile, CI/build artifacts, process and tooling config.
+
+**Upgrades & testing.** None enforced. Upgrade and test only as the repo's own needs dictate.
