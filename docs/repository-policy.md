@@ -20,7 +20,9 @@ Its companion is the [repository taxonomy](./repository-taxonomy.md), which defi
 
 ## Requirements for active public repositories
 
-Every active public repo must meet the following baseline. These are commitments, not suggestions.
+Every active public repo must meet the following baseline. These are commitments, not suggestions. Repositories should always begin as internal or private, and then be proposed to be made public. This proposal step ensures we check for correctness and commit appropriate maintenance resources.
+
+> As the tooling and procedure evolves promoting a repo to public may become autonomous.
 
 ### Ownership and a maintenance commitment
 
