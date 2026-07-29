@@ -3,6 +3,11 @@
 	"description": "Coding Guidelines for Harper repositories. Includes types, linting, and formatting.",
 	"version": "0.1.1",
 	"type": "module",
+	"files": [
+		"eslint.config.mjs",
+		"prettier.config.js",
+		"tsconfig.node.json"
+	],
 	"exports": {
 		"./tsconfig.node.json": "./tsconfig.node.json",
 		"./prettier": "./prettier.config.js",
