@@ -1,26 +1,26 @@
-# @harperdb/code-guidelines
+# @harperfast/code-guidelines
 
-This repository contains code guideline tools and configurations for the HarperDB organization.
+This repository contains code guideline tools and configurations for the Harper organization.
 
 > Currently exports shared configurations for Prettier, ESLint, and TS Node Type Checking. More tools will be added soon.
 
 ## Quick Start
 
-1. `npm i --save-dev @harperdb/code-guidelines`
+1. `npm i --save-dev @harperfast/code-guidelines`
 
-2. Add `"prettier": "@harperdb/code-guidelines/prettier"` to **package.json**.
+2. Add `"prettier": "@harperfast/code-guidelines/prettier"` to **package.json**.
 
 3. Run `npx prettier .`
 
 ## Formatting
 
-We use [Prettier](https://prettier.io/) for formatting. The default config is exported under the `/prettier` path (i.e. `@harperdb/code-guidelines/prettier`).
+We use [Prettier](https://prettier.io/) for formatting. The default config is exported under the `/prettier` path (i.e. `@harperfast/code-guidelines/prettier`).
 
 Review the [Sharing Configurations](https://prettier.io/docs/en/sharing-configurations) documentation for more information how to use or extend the base config.
 
 ## Linting
 
-We use [ESLint](https://eslint.org/) to enforce code quality and integrate Prettier formatting. The default config is exported under the `/eslint` path (i.e. `@harperdb/code-guidelines/eslint`).
+We use [ESLint](https://eslint.org/) to enforce code quality and integrate Prettier formatting. The default config is exported under the `/eslint` path (i.e. `@harperfast/code-guidelines/eslint`).
 
 ### Using the Harper ESLint Configuration
 
@@ -31,13 +31,13 @@ For more detailed information about extending configurations, see the [ESLint Co
 1. Install the required dependencies:
 
 ```bash
-npm i --save-dev @harperdb/code-guidelines eslint prettier
+npm i --save-dev @harperfast/code-guidelines eslint prettier
 ```
 
 2. Create an `eslint.config.mjs` file in your project root:
 
 ```javascript
-import harperConfig from '@harperdb/code-guidelines/eslint';
+import harperConfig from '@harperfast/code-guidelines/eslint';
 import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
@@ -66,14 +66,14 @@ For example, to use the base Node.js configuration (supporting Node.js v20 or la
 1. Start by installing necessary dev dependencies:
 
 ```bash
-   npm i --save-dev typescript @types/node@20 @harperdb/code-guidelines
+   npm i --save-dev typescript @types/node@20 @harperfast/code-guidelines
 ```
 
 2. Then create a `tsconfig.json` file in your project with the following content:
 
 ```json
 {
-	"extends": "@harperdb/code-guidelines/tsconfig.node.json",
+	"extends": "@harperfast/code-guidelines/tsconfig.node.json",
 	"compilerOptions": {
 		// Your custom options here
 	}
