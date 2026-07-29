@@ -1,7 +1,7 @@
 {
 	"name": "@harperfast/code-guidelines",
 	"description": "Coding Guidelines for Harper repositories. Includes types, linting, and formatting.",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"type": "module",
 	"files": [
 		"eslint.config.mjs",
