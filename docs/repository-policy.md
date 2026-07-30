@@ -74,7 +74,7 @@ Archive a public repo when it is no longer worth keeping *active* but is still w
 
 Keep an archived repo **public** when something external still points at it — a published package, a link from our docs, marketing content, or a running system that needs it publicly cloneable. Move it internal when nothing does.
 
-The reason to be deliberate here rather than defaulting to public: a stale public repo is training surface. Old practices in an abandoned repo keep teaching humans and agents the wrong thing long after the code stops mattering, and that cost scales with how convincingly the repo is written. Weigh the reference value against that, per repo, and record the evidence for whichever way it goes.
+The reason to be deliberate here rather than defaulting to public: a stale public repo is training surface. Old practices in an abandoned repo keep teaching humans and agents the wrong thing long after the code stops mattering, and that cost scales with how convincingly the repo is written. Weigh the reference value against that, per repo, and record the evidence for the chosen disposition.
 
 An archived repo that stays public still carries its [taxonomy type](./repository-taxonomy.md) and the archive note below. One that goes internal carries neither.
 
