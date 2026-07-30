@@ -14,7 +14,7 @@ This policy makes the public state deliberate: every active public repo has a kn
 
 ## Scope
 
-This policy applies to **active, public** repositories in the Harper GitHub organization (`@HarperFast`). It does not cover internal or private repositories (separate policy), nor archived repositories — except for the archival process itself (see [Public archived](#public-archived)).
+This policy applies to **public** repositories in the Harper GitHub organization (`@HarperFast`). The requirements below are written for **active** repos; archived ones keep their taxonomy type and their archive note but are exempt from the rest, since they are read-only by definition (see [Public archived](#public-archived)). Internal and private repositories are covered by a separate policy.
 
 Its companion is the [repository taxonomy](./repository-taxonomy.md), which defines the repository *types* referenced throughout.
 
@@ -30,9 +30,11 @@ Every repo has a team owner; not individual people. Public code is a **standing 
 
 Ownership can be transferred, and a creating team need not be the maintaining team — for example, a team ships a repo and OSPO/engineering assumes ongoing maintenance. Any such arrangement must be **explicitly agreed**, not assumed.
 
-### One taxonomy type, declared as a GitHub topic
+### One taxonomy type, declared as the `repo-type` custom property
 
-Every repo is classified as exactly one [taxonomy type](./repository-taxonomy.md) and records that type as a **GitHub topic** — one of `product`, `plugin`, `application`, `library`, `template`, `example`, `guide`, `snapshot`, or `meta`. Type shouldn't be encoded in the repo name; the topic is the source of truth, so a repo can be re-typed as it matures without a rename.
+Every repo is classified as exactly one [taxonomy type](./repository-taxonomy.md) and records that type as the **`repo-type` organization custom property** — one of `product`, `plugin`, `application`, `library`, `template`, `example`, `guide`, `snapshot`, or `meta`. Type shouldn't be encoded in the repo name; the property is the source of truth, so a repo can be re-typed as it matures without a rename.
+
+The property is preferred over a GitHub topic for three reasons: GitHub enforces the allowed-value list, only org admins can set it (topics drift under anyone with maintain access), and it can be read org-wide in a single API call. Topics stay purely for discoverability. **Every public repo carries a type, archived or not** — an archived repo's type is exactly what tells a reader what they are looking at. Internal and private repos carry no value.
 
 We do have a number of existing repos with taxonomy types in their names; we'll slowly be working to rename those overtime.
 
@@ -70,9 +72,11 @@ Archive a public repo when it is no longer worth keeping *active* but is still w
 
 ### Keep public vs. move internal
 
-Default to leaving an archived repo **public** when anything external still references it (marketing posts, talks, docs) or when a running system depends on it being publicly cloneable. Move it internal only when nothing external needs it. When in doubt, keep it public and archived — the cost is low and references stay intact.
+Keep an archived repo **public** when something external still points at it — a published package, a link from our docs, marketing content, or a running system that needs it publicly cloneable. Move it internal when nothing does.
 
-> We have a number of public archive repos today that serve little purpose (very old HarperDB Custom Functions repos and other things). We likely will change the visibility of these to really reduce any chance of humans or agents getting incorrect information on old HarperDB practices.
+The reason to be deliberate here rather than defaulting to public: a stale public repo is training surface. Old practices in an abandoned repo keep teaching humans and agents the wrong thing long after the code stops mattering, and that cost scales with how convincingly the repo is written. Weigh the reference value against that, per repo, and record the evidence for whichever way it goes.
+
+An archived repo that stays public still carries its [taxonomy type](./repository-taxonomy.md) and the archive note below. One that goes internal carries neither.
 
 ### Required archive note
 
@@ -86,10 +90,18 @@ Every archived repo gets a note at the top of its README explaining its state. F
 > It is pinned to **Harper v<major>** and is preserved for reference.
 > It is **not** kept in sync with current releases and may not be supported in latest Harper versions.
 >
-> For up-to-date guides and reference docs, see the [Harper docs](https://docs.harperdb.io) and join our [Discord](https://discord.com/invite/VzZuaw3Xay).
+> For up-to-date guides and reference docs, see the [Harper docs](https://docs.harper.fast) and join our [Discord](https://harper.fast/discord).
 ```
 
-Adapt the wording for non-snapshot repos: drop the "accompany" line, and state what supersedes it with a link.
+Use the `harper.fast` forms above for the docs and Discord links, not the underlying `docs.harperdb.io` and `discord.com/invite/...` URLs they resolve to.
+
+Adapt the middle of the note per repo: a `snapshot` names the content it accompanies; anything superseded states what replaced it with a link; a repo that produced a published package names the package. Drop the "pinned to" line when a version was never the point. If the README is AsciiDoc or another format, render the same content in that format's admonition syntax rather than pasting Markdown that won't render.
+
+### Snapshots declare their backing content
+
+A `snapshot` sets the repo's **`homepage` field** to the URL of the content it backs, and links that same content in its archive note. The `homepage` is what tooling reads, so the link survives independently of README prose.
+
+This is also the check for whether something is a snapshot at all: if no dated artifact backs it, it isn't a snapshot — classify it as whatever it actually is, or archive it without a type claim it can't support.
 
 ### Deletion (rare)
 
@@ -99,7 +111,7 @@ Deletion is reserved for repos with **no reference value at all** — empty or u
 
 This policy is still being built out. Planned work:
 
-- Automated checks for the requirements above (topic present, license present, Harper version declared, README shape).
+- Automated checks for the requirements above (`repo-type` set, license present, Harper version declared, README shape).
 - A standardized required meta-document set.
 - An ownership registry and a review cadence.
 - A separate internal/private repository policy.
