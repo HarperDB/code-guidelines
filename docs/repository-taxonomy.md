@@ -24,7 +24,7 @@ The types defined here feed the [public repository policy](repository-policy.md)
 
 ### Classification Decision Tree
 
-Follow this decision tree to assist with classifying public repositories. It applies to archived repos too — classify an archived repo as whatever it was, since the type is what tells a reader what they're looking at.
+Follow this decision tree to assist with classifying public repositories. It applies to archived repos too — classify an archived repo based on its original active purpose, since the type is what tells a reader what they're looking at.
 
 ```mermaid
 flowchart TD
