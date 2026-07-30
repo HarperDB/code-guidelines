@@ -34,7 +34,7 @@ Ownership can be transferred, and a creating team need not be the maintaining te
 
 Every repo is classified as exactly one [taxonomy type](./repository-taxonomy.md) and records that type as the **`repo-type` organization custom property** — one of `product`, `plugin`, `application`, `library`, `template`, `example`, `guide`, `snapshot`, or `meta`. Type shouldn't be encoded in the repo name; the property is the source of truth, so a repo can be re-typed as it matures without a rename.
 
-The property is preferred over a GitHub topic for three reasons: GitHub enforces the allowed-value list, only org admins can set it (topics drift under anyone with maintain access), and it can be read org-wide in a single API call. Topics stay purely for discoverability. **Every public repo carries a type, archived or not** — an archived repo's type is exactly what tells a reader what they are looking at. Internal and private repos carry no value.
+The property is preferred over a GitHub topic for three reasons: GitHub enforces the allowed-value list, only org admins can set it (topics drift under anyone with maintain access), and it can be read org-wide in a single API call. Topics stay purely for discoverability. **Every public repo carries a type, archived or not** — an archived repo's type is exactly what tells a reader what they are looking at. Internal and private repos do not have this property set.
 
 We do have a number of existing repos with taxonomy types in their names; we'll slowly be working to rename those overtime.
 
