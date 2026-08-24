@@ -24,7 +24,7 @@ The types defined here feed the [public repository policy](repository-policy.md)
 
 ### Classification Decision Tree
 
-Follow this decision tree to assist with classifying active, public repositories.
+Follow this decision tree to assist with classifying public repositories. It applies to archived repos too — classify an archived repo based on its original active purpose, since the type is what tells a reader what they're looking at.
 
 ```mermaid
 flowchart TD
@@ -122,7 +122,8 @@ A frozen companion to a dated artifact — a blog post, talk, video, or benchmar
 **Upgrades & testing.** None — a snapshot is never upgraded. Any tests run only against its pinned Harper version.
 
 - **Frozen but open** during its major's life: content untouched, issues/PRs stay enabled for bug fixes.
-- **Archived when the next Harper major goes GA.** Read-only, not deleted — stays referenceable.
+- **Archived when the next Harper major goes GA.** Read-only, not deleted — stays referenceable, and keeps its `snapshot` type after archival.
+- **Declares its backing content in the repo `homepage` field**, and links it in the README (see the [archive note](repository-policy.md#required-archive-note)). If no dated artifact backs it, it isn't a snapshot.
 - Going red on a *future* major is expected, not a failure.
 - A frequently-referenced Snapshot can be **promoted** to a maintained Example/Template.
 
